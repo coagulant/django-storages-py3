@@ -2,10 +2,7 @@ import os
 import mimetypes
 import warnings
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from io import StringIO
 
 from django.conf import settings
 from django.core.files.base import File
@@ -13,7 +10,7 @@ from django.core.files.storage import Storage
 from django.core.exceptions import ImproperlyConfigured
 
 try:
-    from S3 import AWSAuthConnection, QueryStringAuthGenerator, CallingFormat
+    from .S3 import AWSAuthConnection, QueryStringAuthGenerator, CallingFormat
 except ImportError:
     raise ImproperlyConfigured("Could not load amazon's S3 bindings.\nSee "
         "http://developer.amazonwebservices.com/connect/entry.jspa?externalID=134")
