@@ -402,7 +402,7 @@ class QueryStringAuthGenerator:
 
         url = CallingFormat.build_url_base(self.protocol, self.server, self.port, bucket, self.calling_format)
 
-        url += "/%s" % urllib.parse.quote_plus(key)
+        url += "/%s" % urllib.parse.quote_plus(key, safe='/')
 
         query_args['Signature'] = encoded_canonical
         query_args['Expires'] = expires
