@@ -415,8 +415,6 @@ class QueryStringAuthGenerator:
 
 class S3Object:
     def __init__(self, data, metadata={}):
-        if isinstance(data, bytes):
-            data = data.decode('utf-8')
         self.data = data
         self.metadata = metadata
 
