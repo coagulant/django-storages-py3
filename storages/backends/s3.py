@@ -43,7 +43,8 @@ class S3Storage(Storage):
             access_key=None, secret_key=None, acl=DEFAULT_ACL,
             calling_format=CALLING_FORMAT, encrypt=False,
             gzip=IS_GZIPPED, gzip_content_types=GZIP_CONTENT_TYPES,
-            preload_metadata=PRELOAD_METADATA):
+            preload_metadata=PRELOAD_METADATA,
+            location=BUCKET_PREFIX):
         warnings.warn(
             "The s3 backend is deprecated and will be removed in version 1.2. "
             "Use the s3boto backend instead.",
@@ -55,6 +56,7 @@ class S3Storage(Storage):
         self.gzip = gzip
         self.gzip_content_types = gzip_content_types
         self.preload_metadata = preload_metadata
+        self.location=location
 
         if encrypt:
             try:
@@ -102,7 +104,7 @@ class S3Storage(Storage):
 
     def _clean_name(self, name):
         # Useful for windows' paths
-        return os.path.join(BUCKET_PREFIX, os.path.normpath(name).replace('\\', '/'))
+        return os.path.join(self.location, os.path.normpath(name).replace('\\', '/'))
 
     def _compress_string(self, s):
         """Gzip a given string."""
