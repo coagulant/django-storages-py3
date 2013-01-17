@@ -179,7 +179,7 @@ class S3Storage(Storage):
     def _save(self, name, content):
         name = self._clean_name(name)
         self._put_file(name, content.read())
-        return name
+        return name[len(self.location):].lstrip('/')
 
     def delete(self, name):
         name = self._clean_name(name)
@@ -245,6 +245,7 @@ class S3StorageFile(File):
     def __init__(self, name, storage, mode):
         self._name = name
         self._storage = storage
+        self.name = name[len(self._storage.location):].lstrip('/')
         self._mode = mode
         self._is_dirty = False
         self.file = StringIO()
