@@ -2,9 +2,9 @@ import os
 import mimetypes
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO  # noqa
+    from cStringIO import StringIO  # noqa
 
 from django.conf import settings
 from django.core.files.base import File
