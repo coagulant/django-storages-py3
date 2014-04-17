@@ -18,9 +18,9 @@ except ImportError:
     from django.utils.encoding import force_unicode
 
 try:
-    from boto3.s3.connection import S3Connection, SubdomainCallingFormat
-    from boto3.exception import S3ResponseError
-    from boto3.s3.key import Key
+    from boto.s3.connection import S3Connection, SubdomainCallingFormat
+    from boto.exception import S3ResponseError
+    from boto.s3.key import Key
 except ImportError:
     raise ImproperlyConfigured("Could not load Boto's S3 bindings.\n"
                                "See https://github.com/boto/boto")
