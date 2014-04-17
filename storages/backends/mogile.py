@@ -1,6 +1,6 @@
-import urlparse
+import urllib.parse
 import mimetypes
-from StringIO import StringIO
+from io import StringIO
 
 from django.conf import settings
 from django.core.cache import cache
@@ -12,8 +12,8 @@ from django.core.exceptions import ImproperlyConfigured
 try:
     import mogilefs
 except ImportError:
-    raise ImproperlyConfigured, "Could not load mogilefs dependency.\
-    \nSee http://mogilefs.pbworks.com/Client-Libraries"
+    raise ImproperlyConfigured("Could not load mogilefs dependency.\
+    \nSee http://mogilefs.pbworks.com/Client-Libraries")
 
 
 class MogileFSStorage(Storage):
@@ -28,7 +28,7 @@ class MogileFSStorage(Storage):
                 
         for var in ('MOGILEFS_TRACKERS', 'MOGILEFS_DOMAIN',):
             if not hasattr(settings, var):
-                raise ImproperlyConfigured, "You must define %s to use the MogileFS backend." % var
+                raise ImproperlyConfigured("You must define %s to use the MogileFS backend." % var)
             
         self.trackers = settings.MOGILEFS_TRACKERS
         self.domain = settings.MOGILEFS_DOMAIN
@@ -51,7 +51,7 @@ class MogileFSStorage(Storage):
             return None
     
     def url(self, filename):
-        return urlparse.urljoin(self.base_url, filename).replace('\\', '/')
+        return urllib.parse.urljoin(self.base_url, filename).replace('\\', '/')
 
     def open(self, filename, mode='rb'):
         raise NotImplemented
@@ -69,9 +69,9 @@ class MogileFSStorage(Storage):
         # Write the file to mogile
         success = self.client.send_file(filename, StringIO(raw_contents), self.mogile_class)
         if success:
-            print "Wrote file to key %s, %s@%s" % (filename, self.domain, self.trackers[0])
+            print("Wrote file to key %s, %s@%s" % (filename, self.domain, self.trackers[0]))
         else:
-            print "FAILURE writing file %s" % (filename)
+            print("FAILURE writing file %s" % (filename))
 
         return force_unicode(filename.replace('\\', '/'))
 

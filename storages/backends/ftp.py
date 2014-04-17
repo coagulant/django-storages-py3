@@ -16,12 +16,12 @@
 
 import os
 import ftplib
-import urlparse
+import urllib.parse
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 from django.conf import settings
 from django.core.files.base import File
@@ -44,7 +44,7 @@ class FTPStorage(Storage):
 
     def _decode_location(self, location):
         """Return splitted configuration data from location."""
-        splitted_url = urlparse.urlparse(location)
+        splitted_url = urllib.parse.urlparse(location)
         config = {}
 
         if splitted_url.scheme not in ('ftp', 'aftp'):
@@ -174,7 +174,7 @@ class FTPStorage(Storage):
         self._start_connection()
         try:
             dirs, files = self._get_dir_details(path)
-            return dirs.keys(), files.keys()
+            return list(dirs.keys()), list(files.keys())
         except FTPStorageException:
             raise
 
@@ -219,7 +219,7 @@ class FTPStorage(Storage):
     def url(self, name):
         if self._base_url is None:
             raise ValueError("This file is not accessible via a URL.")
-        return urlparse.urljoin(self._base_url, name).replace('\\', '/')
+        return urllib.parse.urljoin(self._base_url, name).replace('\\', '/')
 
 
 class FTPStorageFile(File):

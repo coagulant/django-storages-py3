@@ -1,7 +1,7 @@
 # DatabaseStorage for django.
 # 2009 (c) GameKeeper Gambling Ltd, Ivanov E.
-import StringIO
-import urlparse
+import io
+import urllib.parse
 
 from django.conf import settings
 from django.core.files import File
@@ -11,8 +11,8 @@ from django.core.exceptions import ImproperlyConfigured
 try:
     import pyodbc
 except ImportError:
-    raise ImproperlyConfigured, "Could not load pyodbc dependency.\
-    \nSee http://code.google.com/p/pyodbc/"
+    raise ImproperlyConfigured("Could not load pyodbc dependency.\
+    \nSee http://code.google.com/p/pyodbc/")
 
 REQUIRED_FIELDS = ('db_table', 'fname_column', 'blob_column', 'size_column', 'base_url')
 
@@ -81,7 +81,7 @@ that returns an image as result.
         row = self.cursor.execute("SELECT %s from %s where %s = '%s'"%(self.blob_column,self.db_table,self.fname_column,name) ).fetchone()
         if row is None:
             return None
-        inMemFile = StringIO.StringIO(row[0])
+        inMemFile = io.StringIO(row[0])
         inMemFile.name = name
         inMemFile.mode = mode
         
@@ -122,7 +122,7 @@ that returns an image as result.
     def url(self, name):
         if self.base_url is None:
             raise ValueError("This file is not accessible via a URL.")
-        return urlparse.urljoin(self.base_url, name).replace('\\', '/')
+        return urllib.parse.urljoin(self.base_url, name).replace('\\', '/')
     
     def size(self, name):
         row = self.cursor.execute("SELECT %s from %s where %s = '%s'"%(self.size_column,self.db_table,self.fname_column,name)).fetchone()

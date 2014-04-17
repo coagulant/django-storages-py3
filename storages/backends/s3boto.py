@@ -4,7 +4,7 @@ import mimetypes
 try:
     from io import StringIO
 except ImportError:
-    from cStringIO import StringIO  # noqa
+    from io import StringIO  # noqa
 
 from django.conf import settings
 from django.core.files.base import File
@@ -71,7 +71,7 @@ def safe_join(base, *paths):
     Paths outside the base path indicate a possible security
     sensitive operation.
     """
-    from urlparse import urljoin
+    from urllib.parse import urljoin
     base_path = force_unicode(base)
     base_path = base_path.rstrip('/')
     paths = [force_unicode(p) for p in paths]
