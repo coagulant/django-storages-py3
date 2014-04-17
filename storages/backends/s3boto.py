@@ -10,7 +10,12 @@ from django.conf import settings
 from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
-from django.utils.encoding import force_unicode, smart_str
+from django.utils.encoding import smart_str
+
+try:
+    from django.utils.encoding import force_text as force_unicode
+except ImportError:
+    from django.utils.encoding import force_unicode
 
 try:
     from boto.s3.connection import S3Connection, SubdomainCallingFormat
