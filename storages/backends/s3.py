@@ -2,10 +2,7 @@ import os
 import mimetypes
 import warnings
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from io import StringIO
 
 from django.conf import settings
 from django.core.files.base import File
@@ -13,7 +10,7 @@ from django.core.files.storage import Storage
 from django.core.exceptions import ImproperlyConfigured
 
 try:
-    from S3 import AWSAuthConnection, QueryStringAuthGenerator, CallingFormat
+    from .S3 import AWSAuthConnection, QueryStringAuthGenerator, CallingFormat
 except ImportError:
     raise ImproperlyConfigured("Could not load amazon's S3 bindings.\nSee "
         "http://developer.amazonwebservices.com/connect/entry.jspa?externalID=134")
@@ -46,7 +43,8 @@ class S3Storage(Storage):
             access_key=None, secret_key=None, acl=DEFAULT_ACL,
             calling_format=CALLING_FORMAT, encrypt=False,
             gzip=IS_GZIPPED, gzip_content_types=GZIP_CONTENT_TYPES,
-            preload_metadata=PRELOAD_METADATA):
+            preload_metadata=PRELOAD_METADATA,
+            location=BUCKET_PREFIX):
         warnings.warn(
             "The s3 backend is deprecated and will be removed in version 1.2. "
             "Use the s3boto backend instead.",
@@ -58,6 +56,7 @@ class S3Storage(Storage):
         self.gzip = gzip
         self.gzip_content_types = gzip_content_types
         self.preload_metadata = preload_metadata
+        self.location=location
 
         if encrypt:
             try:
@@ -105,7 +104,7 @@ class S3Storage(Storage):
 
     def _clean_name(self, name):
         # Useful for windows' paths
-        return os.path.join(BUCKET_PREFIX, os.path.normpath(name).replace('\\', '/'))
+        return os.path.join(self.location, os.path.normpath(name).replace('\\', '/'))
 
     def _compress_string(self, s):
         """Gzip a given string."""
@@ -179,13 +178,8 @@ class S3Storage(Storage):
 
     def _save(self, name, content):
         name = self._clean_name(name)
-        content.open()
-        if hasattr(content, 'chunks'):
-            content_str = ''.join(chunk for chunk in content.chunks())
-        else:
-            content_str = content.read()
-        self._put_file(name, content_str)
-        return name
+        self._put_file(name, content.read())
+        return name[len(self.location):].lstrip('/')
 
     def delete(self, name):
         name = self._clean_name(name)
@@ -251,6 +245,7 @@ class S3StorageFile(File):
     def __init__(self, name, storage, mode):
         self._name = name
         self._storage = storage
+        self.name = name[len(self._storage.location):].lstrip('/')
         self._mode = mode
         self._is_dirty = False
         self.file = StringIO()
