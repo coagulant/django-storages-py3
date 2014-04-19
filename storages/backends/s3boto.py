@@ -2,15 +2,15 @@ import os
 import mimetypes
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO  # noqa
+    from io import StringIO  # noqa
 
 from django.conf import settings
 from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
-from django.utils.encoding import force_unicode, smart_str
+from django.utils.encoding import force_text as force_unicode, smart_str
 
 try:
     from boto.s3.connection import S3Connection, SubdomainCallingFormat
@@ -71,7 +71,7 @@ def safe_join(base, *paths):
     Paths outside the base path indicate a possible security
     sensitive operation.
     """
-    from urlparse import urljoin
+    from urllib.parse import urljoin
     base_path = force_unicode(base)
     base_path = base_path.rstrip('/')
     paths = [force_unicode(p) for p in paths]

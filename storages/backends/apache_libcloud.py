@@ -9,9 +9,9 @@ from django.core.files.base import File
 from django.core.exceptions import ImproperlyConfigured
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 
 try:
@@ -34,7 +34,7 @@ class LibCloudStorage(Storage):
                 'LIBCLOUD_PROVIDERS %s not defined or invalid' % provider_name)
         try:
             provider_type = self.provider['type']
-            if isinstance(provider_type, basestring):
+            if isinstance(provider_type, str):
                 module_path, tag = provider_type.rsplit('.', 1)
                 if module_path != 'libcloud.storage.types.Provider':
                     raise ValueError("Invalid module path")
@@ -45,7 +45,7 @@ class LibCloudStorage(Storage):
                 self.provider['user'],
                 self.provider['key'],
                 )
-        except Exception, e:
+        except Exception as e:
             raise ImproperlyConfigured(
                 "Unable to create libcloud driver type %s: %s" % \
                 (self.provider.get('type'), e))
@@ -131,7 +131,7 @@ class LibCloudStorage(Storage):
     def _read(self, name, start_range=None, end_range=None):
         obj = self._get_object(name)
         # TOFIX : we should be able to read chunk by chunk
-        return self.driver.download_object_as_stream(obj, obj.size).next()
+        return next(self.driver.download_object_as_stream(obj, obj.size))
 
     def _save(self, name, file):
         self.driver.upload_object_via_stream(iter(file), self._get_bucket(), name)

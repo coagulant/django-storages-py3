@@ -17,9 +17,9 @@ from django.core.files.storage import Storage
 from django.utils.text import get_valid_filename
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except:
-    from StringIO import StringIO
+    from io import StringIO
 
 try:
     import cloudfiles
@@ -239,7 +239,7 @@ class CloudStorageDirectory(File):
     def __str__(self):
         return 'directory'
 
-    def __nonzero__(self):
+    def __bool__(self):
         return True
 
     def open(self, mode=None):
