@@ -333,6 +333,7 @@ class S3BotoStorage(Storage):
             last_modified_date = last_modified_date.replace(tzinfo=tz.tzutc())
         # convert date to local time w/o timezone
         timezone = tz.gettz(settings.TIME_ZONE)
+        timezone.normalize(last_modified_date)
         return last_modified_date.astimezone(timezone).replace(tzinfo=None)
 
     def url(self, name):
