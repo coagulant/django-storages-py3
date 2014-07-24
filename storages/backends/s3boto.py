@@ -13,7 +13,7 @@ from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
 from django.utils.encoding import force_text as force_unicode, smart_str
 
 try:
-    from boto.s3.connection import S3Connection, SubdomainCallingFormat
+    from boto.s3.connection import S3Connection, SubdomainCallingFormat,NoHostProvided
     from boto.exception import S3ResponseError
     from boto.s3.key import Key
 except ImportError:
@@ -22,6 +22,7 @@ except ImportError:
 
 ACCESS_KEY_NAME = getattr(settings, 'AWS_S3_ACCESS_KEY_ID', getattr(settings, 'AWS_ACCESS_KEY_ID', None))
 SECRET_KEY_NAME = getattr(settings, 'AWS_S3_SECRET_ACCESS_KEY', getattr(settings, 'AWS_SECRET_ACCESS_KEY', None))
+HOST = getattr(settings, 'AWS_HOST', NoHostProvided)
 HEADERS = getattr(settings, 'AWS_HEADERS', {})
 STORAGE_BUCKET_NAME = getattr(settings, 'AWS_STORAGE_BUCKET_NAME', None)
 AUTO_CREATE_BUCKET = getattr(settings, 'AWS_AUTO_CREATE_BUCKET', False)
@@ -140,7 +141,7 @@ class S3BotoStorage(Storage):
         if not access_key and not secret_key:
             access_key, secret_key = self._get_access_keys()
         self.connection = self.connection_class(access_key, secret_key,
-            calling_format=self.calling_format)
+            calling_format=self.calling_format,host=HOST)
 
     @property
     def bucket(self):
@@ -332,6 +333,7 @@ class S3BotoStorage(Storage):
             last_modified_date = last_modified_date.replace(tzinfo=tz.tzutc())
         # convert date to local time w/o timezone
         timezone = tz.gettz(settings.TIME_ZONE)
+        timezone.normalize(last_modified_date)
         return last_modified_date.astimezone(timezone).replace(tzinfo=None)
 
     def url(self, name):
