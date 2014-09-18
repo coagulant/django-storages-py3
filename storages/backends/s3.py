@@ -10,7 +10,7 @@ from django.core.files.storage import Storage
 from django.core.exceptions import ImproperlyConfigured
 
 try:
-    from .S3 import AWSAuthConnection, QueryStringAuthGenerator, CallingFormat
+    from ..utils.S3 import AWSAuthConnection, QueryStringAuthGenerator, CallingFormat
 except ImportError:
     raise ImproperlyConfigured("Could not load amazon's S3 bindings.\nSee "
         "http://developer.amazonwebservices.com/connect/entry.jspa?externalID=134")
