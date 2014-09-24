@@ -397,7 +397,9 @@ class S3BotoStorageFile(File):
 
     def _get_file(self):
         if self._file is None:
-            self._file = BytesIO()
+            self._file = StringIO()
+            if 'rb' == self._mode:
+                self._file = BytesIO()
             if 'r' in self._mode:
                 self._is_dirty = False
                 self.key.get_contents_to_file(self._file)
