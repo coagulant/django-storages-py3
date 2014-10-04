@@ -2,9 +2,9 @@ import os
 import mimetypes
 
 try:
-    from io import StringIO
+    from io import StringIO, BytesIO
 except ImportError:
-    from io import StringIO  # noqa
+    from io import StringIO, BytesIO  # noqa
 
 from django.conf import settings
 from django.core.files.base import File
@@ -398,6 +398,8 @@ class S3BotoStorageFile(File):
     def _get_file(self):
         if self._file is None:
             self._file = StringIO()
+            if 'rb' == self._mode:
+                self._file = BytesIO()
             if 'r' in self._mode:
                 self._is_dirty = False
                 self.key.get_contents_to_file(self._file)
