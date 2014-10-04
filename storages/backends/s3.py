@@ -186,6 +186,12 @@ class S3Storage(Storage):
         response = self.connection.delete(self.bucket, name)
         if response.http_response.status != 204:
             raise IOError("S3StorageError: %s" % response.message)
+        else:
+            # If deletion succeeded remove the file from `self.entries` as well
+            try:
+                del self.entries[name]
+            except KeyError:
+                pass
 
     def exists(self, name):
         name = self._clean_name(name)
