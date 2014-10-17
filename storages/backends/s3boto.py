@@ -11,6 +11,7 @@ from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
 from django.utils.encoding import force_text as force_unicode, smart_str
+from django.utils.deconstruct import deconstructible
 
 try:
     from boto.s3.connection import S3Connection, SubdomainCallingFormat,NoHostProvided
@@ -93,6 +94,7 @@ def safe_join(base, *paths):
     return final_path.lstrip('/')
 
 
+@deconstructible
 class S3BotoStorage(Storage):
     """
     Amazon Simple Storage Service using Boto
