@@ -19,6 +19,9 @@ By order of apparition, thanks:
     * Waldemar Kornewald (MongoDB)
     * Russell Keith-Magee (Apache LibCloud patches)
     * Juan Bonfante (py3k ports)
+    * Farhodjon Chinberdiyev (thumbnails fix)
+    * Malthe Jørgensen
+    * Ali Lozano
 
 Extra thanks to Marty for adding this in Django,
 you can buy his very interesting book (Pro Django).
