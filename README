@@ -7,3 +7,19 @@ Install
 
 
 See http://django-storages.readthedocs.org/
+
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Added some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+
+See [LICENSE.md](LICENSE.md).
+
+TODO: Add Contributing MD
+TODO: Tie this repo to a CI for coverage data
+TODO: Add to PyPy
+TODO: Shoot for 100% coverage
